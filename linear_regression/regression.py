@@ -1,5 +1,6 @@
 # coding: utf-8
 import numpy as np
+import matplotlib as plt
 import time
 
 def exeTime(func):
@@ -60,12 +61,8 @@ def J(theta, X, y):
     Returns:
         预测误差（代价）
     """
-    result = 0.0
     m = len(X)
-    for i in range(m):
-        diff = pow(y[i,0] - h(theta, X[i].T), 2)
-        result = result + diff
-    return result/(2*m)
+    return (X*theta-y).T*(X*theta-y)/(2*m)
 
 @exeTime
 def bgd(rate, maxLoop, epsilon, X, y):
@@ -79,7 +76,7 @@ def bgd(rate, maxLoop, epsilon, X, y):
         y: 标签矩阵
 
     Returns:
-        (theta, error, iterationCount), timeConsumed
+        (theta, errors, thetas), timeConsumed
     """
     m,n = X.shape
     # 初始化theta
@@ -87,38 +84,36 @@ def bgd(rate, maxLoop, epsilon, X, y):
     count = 0
     converged = False
     error = float('inf')
+    errors = []
+    thetas = {}
+    for j in range(n):
+        thetas[j] = [theta[j,0]]
     while count<=maxLoop:
         if(converged):
             break
         count = count + 1
         for j in range(n):
-            if(converged):
-                break
-            result = 0
-            for i in range(m):
-                diff = pow(y[i,0] - h(theta, X[i].T),2)*X[i,j]
-                result =result + diff
-            theta[j,0] = theta[j,0]+rate*result/m
-             # 如果已经收敛
-            error = J(theta, X, y)
-            if(error < epsilon):
-                converged = True
-    return theta,error,count-1
+            deriv = (y-X*theta).T*X[:, j]/m
+            theta[j,0] = theta[j,0]+rate*deriv
+            thetas[j].append(theta[j,0])
+        error = J(theta, X, y)
+        errors.append(error[0,0])
+        # 如果已经收敛
+        if(error < epsilon):
+            converged = True
+    return theta,errors,thetas
 
-# 定义随机梯度下降
 @exeTime
 def sgd(rate, maxLoop, epsilon, X, y):
     """随机梯度下降法
-
     Args:
         rate: 学习率
         maxLoop: 最大迭代次数
         epsilon: 收敛精度
         X: 样本矩阵
         y: 标签矩阵
-
     Returns:
-        (theta, error, iterationCount), timeConsumed
+        (theta, error, thetas), timeConsumed
     """
     m,n = X.shape
     # 初始化theta
@@ -126,18 +121,126 @@ def sgd(rate, maxLoop, epsilon, X, y):
     count = 0
     converged = False
     error = float('inf')
+    errors = []
+    thetas = {}
+    for j in range(n):
+        thetas[j] = [theta[j,0]]
     while count <= maxLoop:
         if(converged):
             break
         count = count + 1
+        errors.append(float('inf'))
         for i in range(m):
             if(converged):
                 break
             diff = y[i,0]-h(theta, X[i].T)
             for j in range(n):
                 theta[j,0] = theta[j,0] + rate*diff*X[i, j]
-            # 如果已经收敛
+                thetas[j].append(theta[j,0])
             error = J(theta, X, y)
+            errors[-1] = error[0,0]
+            # 如果已经收敛
             if(error < epsilon):
                 converged = True
-    return theta, error, count-1
+    return theta, errors, thetas
+
+def JLwr(theta, X, y, x, c):
+    """局部加权线性回归的代价函数计算式
+
+    Args:
+        theta: 相关系数矩阵
+        X: 样本集矩阵
+        y: 标签集矩阵
+        x: 待预测输入
+        c: tau
+    Returns:
+        预测代价
+    """
+    m,n = X.shape
+    summerize = 0
+    for i in range(m):
+        diff = (X[i]-x)*(X[i]-x).T
+        w = np.exp(-diff/(2*c*c))
+        predictDiff = np.power(y[i] - X[i]*theta,2)
+        summerize = summerize + w*predictDiff
+    return summerize
+
+@exeTime
+def lwr(rate, maxLoop, epsilon, X, y, x, c=1):
+    """局部加权线性回归
+
+    Args:
+        rate: 学习率
+        maxLoop: 最大迭代次数
+        epsilon: 预测精度
+        X: 输入样本
+        y: 标签向量
+        x: 待预测向量
+        c: tau
+    """
+    m,n = X.shape
+    # 初始化theta
+    theta = np.zeros((n,1))
+    count = 0
+    converged = False
+    error = float('inf')
+    errors = []
+    thetas = {}
+    for j in range(n):
+        thetas[j] = [theta[j,0]]
+    # 执行批量梯度下降
+    while count<=maxLoop:
+        if(converged):
+            break
+        count = count + 1
+        for j in range(n):
+            deriv = (y-X*theta).T*X[:, j]/m
+            theta[j,0] = theta[j,0]+rate*deriv
+            thetas[j].append(theta[j,0])
+        error = JLwr(theta, X, y, x, c)
+        errors.append(error[0,0])
+        # 如果已经收敛
+        if(error < epsilon):
+            converged = True
+    return theta,errors,thetas
+
+def standardize(X):
+    """特征标准化处理
+
+    Args:
+        X: 样本集
+    Returns:
+        标准后的样本集
+    """
+    m, n = X.shape
+    # 归一化每一个特征
+    for j in range(n):
+        features = X[:,j]
+        meanVal = features.mean(axis=0)
+        std = features.std(axis=0)
+        if std != 0:
+            X[:, j] = (features-meanVal)/std
+        else:
+            X[:, j] = 0
+    return X
+
+def normalize(X):
+    """特征归一化处理
+
+    Args:
+        X: 样本集
+    Returns:
+        归一化后的样本集
+    """
+    m, n = X.shape
+    # 归一化每一个特征
+    for j in range(n):
+        features = X[:,j]
+        minVal = features.min(axis=0)
+        maxVal = features.max(axis=0)
+        diff = maxVal - minVal
+        if diff != 0:
+           X[:,j] = (features-minVal)/diff
+        else:
+           X[:,j] = 0
+    return X
