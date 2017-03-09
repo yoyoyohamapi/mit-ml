@@ -1,4 +1,5 @@
 # coding: utf-8
+# linear_regression/regression.py
 import numpy as np
 import matplotlib as plt
 import time
@@ -19,11 +20,11 @@ def loadDataSet(filename):
     "feature1 TAB feature2 TAB feature3 TAB label"
 
     Args:
-        filename: 文件名
+        filename 文件名
 
     Returns:
-        X: 训练样本集矩阵
-        y: 标签集矩阵
+        X 训练样本集矩阵
+        y 标签集矩阵
     """
     numFeat = len(open(filename).readline().split('\t')) - 1
     X = []
@@ -42,8 +43,8 @@ def h(theta, x):
     """预测函数
 
     Args:
-        theta: 相关系数矩阵
-        x: 特征向量
+        theta 相关系数矩阵
+        x 特征向量
 
     Returns:
         预测结果
@@ -54,9 +55,9 @@ def J(theta, X, y):
     """代价函数
 
     Args:
-        theta: 相关系数矩阵
-        X: 样本集矩阵
-        y: 标签集矩阵
+        theta 相关系数矩阵
+        X 样本集矩阵
+        y 标签集矩阵
 
     Returns:
         预测误差（代价）
@@ -69,11 +70,11 @@ def bgd(rate, maxLoop, epsilon, X, y):
     """批量梯度下降法
 
     Args:
-        rate: 学习率
-        maxLoop: 最大迭代次数
-        epsilon: 收敛精度
-        X: 样本矩阵
-        y: 标签矩阵
+        rate 学习率
+        maxLoop 最大迭代次数
+        epsilon 收敛精度
+        X 样本矩阵
+        y 标签矩阵
 
     Returns:
         (theta, errors, thetas), timeConsumed
@@ -107,11 +108,11 @@ def bgd(rate, maxLoop, epsilon, X, y):
 def sgd(rate, maxLoop, epsilon, X, y):
     """随机梯度下降法
     Args:
-        rate: 学习率
-        maxLoop: 最大迭代次数
-        epsilon: 收敛精度
-        X: 样本矩阵
-        y: 标签矩阵
+        rate 学习率
+        maxLoop 最大迭代次数
+        epsilon 收敛精度
+        X 样本矩阵
+        y 标签矩阵
     Returns:
         (theta, error, thetas), timeConsumed
     """
@@ -126,12 +127,12 @@ def sgd(rate, maxLoop, epsilon, X, y):
     for j in range(n):
         thetas[j] = [theta[j,0]]
     while count <= maxLoop:
-        if(converged):
+        if converged:
             break
         count = count + 1
         errors.append(float('inf'))
         for i in range(m):
-            if(converged):
+            if converged:
                 break
             diff = y[i,0]-h(theta, X[i].T)
             for j in range(n):
@@ -148,11 +149,11 @@ def JLwr(theta, X, y, x, c):
     """局部加权线性回归的代价函数计算式
 
     Args:
-        theta: 相关系数矩阵
-        X: 样本集矩阵
-        y: 标签集矩阵
-        x: 待预测输入
-        c: tau
+        theta 相关系数矩阵
+        X 样本集矩阵
+        y 标签集矩阵
+        x 待预测输入
+        c tau
     Returns:
         预测代价
     """
@@ -170,13 +171,13 @@ def lwr(rate, maxLoop, epsilon, X, y, x, c=1):
     """局部加权线性回归
 
     Args:
-        rate: 学习率
-        maxLoop: 最大迭代次数
-        epsilon: 预测精度
-        X: 输入样本
-        y: 标签向量
-        x: 待预测向量
-        c: tau
+        rate 学习率
+        maxLoop 最大迭代次数
+        epsilon 预测精度
+        X 输入样本
+        y 标签向量
+        x 待预测向量
+        c tau
     """
     m,n = X.shape
     # 初始化theta
@@ -208,7 +209,7 @@ def standardize(X):
     """特征标准化处理
 
     Args:
-        X: 样本集
+        X 样本集
     Returns:
         标准后的样本集
     """
@@ -228,7 +229,7 @@ def normalize(X):
     """特征归一化处理
 
     Args:
-        X: 样本集
+        X 样本集
     Returns:
         归一化后的样本集
     """

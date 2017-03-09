@@ -1,4 +1,6 @@
 # coding: utf-8
+# kmeans/test_bi_kmeans.py
+
 import kmeans
 import numpy as np
 import matplotlib.pyplot as plt

@@ -1,4 +1,5 @@
 # coding: utf-8
+# linear_regression/test_bgd.py
 import regression
 from matplotlib import cm
 from mpl_toolkits.mplot3d import axes3d

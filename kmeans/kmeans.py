@@ -1,7 +1,6 @@
 # coding: utf-8
-
+# kmeans/kmeans.py
 import numpy as np
-
 
 def loadDataSet(filename):
     """
