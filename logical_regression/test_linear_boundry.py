@@ -5,7 +5,6 @@ import logical_regression as regression
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 
-
 if __name__ == "__main__":
     X, y = regression.loadDataSet('data/linear.txt')
     m, n = X.shape

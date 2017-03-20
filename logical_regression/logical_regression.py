@@ -120,3 +120,38 @@ def gradient(X, y, options):
         'bgd': _bgd
     }
     return methods[method](theta)
+
+def oneVsAll(X, y, options):
+    """One-vs-All 多分类
+
+    Args:
+        X 样本
+        y 标签
+        options 训练配置
+    Returns:
+        Thetas 权值矩阵
+    """
+    # 类型数
+    classes = set(np.ravel(y))
+    # 决策边界矩阵
+    Thetas = np.zeros((len(classes), X.shape[1]))
+    # 一次选定每种分类对应的样本为正样本，其他样本标识为负样本，进行逻辑回归
+    for idx, c in enumerate(classes):
+        newY = np.zeros(y.shape)
+        newY[np.where(y == c)] = 1
+        result, timeConsumed = gradient(X, newY, options)
+        thetas,errors,iterations = result
+        Thetas[idx] = thetas[-1].ravel()
+    return Thetas
+
+def predictOneVsAll(X,Thetas):
+    """One-vs-All下的多分类预测
+
+    Args:
+        X 样本
+        Thetas 权值矩阵
+    Returns：
+        H 预测结果
+    """
+    H = sigmoid(Thetas * X.T)
+    return H
