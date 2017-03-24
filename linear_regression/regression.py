@@ -205,7 +205,7 @@ def lwr(rate, maxLoop, epsilon, X, y, x, c=1):
             converged = True
     return theta,errors,thetas
 
-def standardize(X):
+def standarize(X):
     """特征标准化处理
 
     Args:
