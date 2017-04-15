@@ -19,7 +19,6 @@ Thetas = [Thetas['Theta1'], Thetas['Theta2']]
 
 
 X = np.mat(data['X'])
-print X.shape
 y = np.mat(data['y'])
 
 res = nn.train(X,y,hiddenNum=1,unitNum=25,Thetas=Thetas, precision = 0.5)
