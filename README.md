@@ -1,6 +1,8 @@
 斯坦福机器学习笔记
 ==================
 
+Gitbook 地址： [戳我](https://www.gitbook.com/book/yoyoyohamapi/mit-ml/details)
+
 本书为斯坦福吴恩达教授的在 coursera 上的[机器学习公开课](https://zh.coursera.org/learn/machine-learning)的知识笔记，涵盖了大部分课上涉及到的知识点和内容，因为篇幅有限，部分公式的推导没有记录在案，但推荐大家还是在草稿本上演算一遍，加深印象，知其然还要知其所以然。
 
 本书涉及到的程序代码均放在了我个人的 [github](https://github.com/yoyoyohamapi/mit-ml) 上，采用了 python 实现，大部分代码都是相关学习算法的完整实现和测试。我没有放这门课程的 homework 代码，原因是 homework 布置的编程作业是填空式的作业，而完整实现一个算法虽然历经更多坎坷，但更有助于检验自己对算法理解和掌握程度。
